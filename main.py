@@ -27,7 +27,7 @@ async def on_message(message):
         ),
     ]
 
-    if message.content == 'Hello':
+    if message.content == 'Hi':
         # response = random.choice(brooklyn_99_quotes)
         
         img = "grass.jpg"
