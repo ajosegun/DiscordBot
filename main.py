@@ -2,12 +2,13 @@ import pandas
 import discord
 import random
 import matplotlib.pyplot as plt
+import config
 
 print("Starting Bot...")
 
 
-TOKEN = "OTE4MTY2ODUwNTc0MTE4OTgz.YbDTgw.HZrv-PNhZsJ3zFTFVc_J0sV8dvM"
-GUILD = "PGE2 ADAV"
+TOKEN = config.TOKEN
+GUILD = config.GUILD
 
 client = discord.Client()
 
