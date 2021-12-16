@@ -15,7 +15,7 @@ client = discord.Client()
 async def on_message(message):
     if message.author == client.user:
         return
-        #comme
+        #commented this line for test
 
     brooklyn_99_quotes = [
         'I\'m the human form of the 💯 emoji.',
