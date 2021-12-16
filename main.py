@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 print("Starting Bot...")
 
 
-TOKEN = "OTE4MTY2ODUwNTc0MTE4OTgz.YbDTgw.HZrv-PNhZsJ3zFTFVc_J0sV8dvM"
+TOKEN = "OTE4MTY2ODUwNTc0MTE4OTgz.YbDTgw.Vplms-ToVFbl8h7VmNUkcnShMX4"
 GUILD = "PGE2 ADAV"
 
 client = discord.Client()
@@ -26,7 +26,7 @@ async def on_message(message):
         ),
     ]
 
-    if message.content == 'Hello':
+    if message.content == 'Hi':
         # response = random.choice(brooklyn_99_quotes)
         
         img = "grass.jpg"
