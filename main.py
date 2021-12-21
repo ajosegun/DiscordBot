@@ -21,6 +21,7 @@ async def on_ready():
     for guild in bot.guilds:
         if guild.name == GUILD:
             break
+        await guild.text_channels[1].send("bot is online")
 
     print(
         f'{bot.user} is connected to the following guild:\n'
@@ -30,24 +31,7 @@ async def on_ready():
     members = '\n - '.join([member.name for member in guild.members])
     print(f'Guild Members:\n - {members}')
 
-    for channel in guild.channels:
-        if channel.name == "aivancitygamers#8089":
-            wanted_channel_id = channel.id
-            await channel.send(wanted_channel_id) 
-
-    
-
-    # channel = bot.get_channel(guild.id)
-    # await channel.send('hello')
-    # print("Gotten")
-
-# @bot.command()
-# async def get_channel(ctx, *, given_name=None):
-#     for channel in ctx.guild.channels:
-#         if channel.name == given_name:
-#             wanted_channel_id = channel.id
-
-#     await ctx.send(wanted_channel_id) # this is just to check 
+    # await bot.get_channel(guild.id).send("bot is online")
 
 
 @bot.event
@@ -72,7 +56,7 @@ async def help_me(ctx):
         '1: Compare vaccination between 2 countries: !Compare Country1 Country2 Metrics Days',
         '2: Get countries with highest number of vaccinated people: !Top Records Metrics Days',
         '3: Get countries with lowest number of vaccinated people: !Bottom Records Metrics Days',
-        '3: '
+        '4: '
     ]
 
     response = "\n".join(help_messages)
@@ -145,19 +129,19 @@ async def bottom(ctx, records: int, metrics, days: int):
     await ctx.send(file=discord.File(img_path))
     functions.delete_file(img_path)
 
-@bot.event
-async def on_message(message):
+# @bot.event
+# async def on_message(message):
     
-    ## Differientiate between messages from the bot and a user
-    if message.author == bot.user:
-        return
+#     ## Differientiate between messages from the bot and a user
+#     if message.author == bot.user:
+#         return
 
-    functions.log_message(message.content, bot.user.name)
+#     functions.log_message(message.content, bot.user.name)
 
-    print(message.content + " from " + bot.user.name)
+#     print(message.content + " from " + bot.user.name)
 
-    response = "Sorry, I don't understand your message. Type !help for more information. "
-    await message.channel.send(response)
+#     response = "Sorry, I don't understand your message. Type !help for more information. "
+#     await message.channel.send(response)
 
 
 bot.run(TOKEN)
