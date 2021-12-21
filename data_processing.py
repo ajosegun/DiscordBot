@@ -17,11 +17,14 @@ def get_vaccinations_dataset():
     '''
     Gets vaccinations dataset from the url or get it from the local dataset
     '''
-    covid_vaccinations_ur = "https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/vaccinations.csv"
+    
+    return pd.read_csv("dataset/vaccinations.csv")
+
+    covid_vaccinations_url = "https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/vaccinations.csv"
 
     ## Get the dataset from the API
     try:
-        country_vaccinations_df = pd.read_csv(covid_vaccinations_ur)
+        country_vaccinations_df = pd.read_csv(covid_vaccinations_url)
         country_vaccinations_df.to_csv('dataset/vaccinations.csv')
 
     except Exception as e:
@@ -52,7 +55,7 @@ country_vaccinations_df = get_vaccinations_dataset()
 country_vaccinations_df['country'] = country_vaccinations_df['location'] 
 country_list = country_vaccinations_df['country'].unique()
 today_date = datetime.datetime.now()
-date_view = 30
+
 
 def get_dataset_by_history(history_days = 90):
     '''
@@ -60,22 +63,11 @@ def get_dataset_by_history(history_days = 90):
 
     '''
     
-    start_date = today_date.strftime("%Y-%m-%d")
+    # start_date = today_date.strftime("%Y-%m-%d")
 
-    if history_days == "30":
-        start_date = (today_date - datetime.timedelta(30)).strftime("%Y-%m-%d")
-        date_view = 30
-    elif history_days == "90":
-        start_date = (today_date - datetime.timedelta(90)).strftime("%Y-%m-%d")
-        date_view = 90
-    elif history_days == "180":
-        start_date = (today_date - datetime.timedelta(120)).strftime("%Y-%m-%d")
-        date_view = 180
-    elif history_days == "365":
-        start_date = (today_date - datetime.timedelta(365)).strftime("%Y-%m-%d")
-        date_view = 365
+    start_date = (today_date - datetime.timedelta(history_days)).strftime("%Y-%m-%d")
+    date_view = history_days
 
-    # country_vaccinations_df = country_vaccinations_df[country_vaccinations_df["date"] > start_date]
     
     return country_vaccinations_df[country_vaccinations_df["date"] > start_date]
 
@@ -98,7 +90,7 @@ def compare_vaccinations_between_countries(country_1, country_2, days, metrics =
     fig = go.Figure()
     
     fig = px.line(country_df, x="date", y=metrics, color='country', symbol="country",
-                title= "Comparing monthly {} between \n {} and {} across the last {} days".format(metrics, country_1, country_2, date_view),
+                title= "Comparing monthly {} between \n {} and {} across the last {} days".format(metrics, country_1, country_2, days),
                 labels={"total_vaccinations": "Total Vaccinations", 
                         "total_vaccinations_per_hundred": "Total Vaccinations Per Hundred", 
                         "date":"Months"
@@ -135,7 +127,7 @@ def get_top_bottom_vaccinated_countries(top_bottom, number_of_records, days, met
     
 
     fig = px.bar(vaccinated_by_country, x = country_index, y = compare_values, 
-                title='Compare monthly {} by {} and {} across the last {} days '.format(metrics, compare_values[0], compare_values[1], date_view),
+                title='Compare monthly {} by {} and {} across the last {} days '.format(metrics, compare_values[0], compare_values[1], days),
                 labels={"value":"Total People", "country":'Country', 
                         "variable":"Vaccinated People"
                         })
