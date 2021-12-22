@@ -52,15 +52,49 @@ async def help_me(ctx):
         "Metrics: total_vaccinations | total_vaccinations_per_hundred \n",
         "Days: 30 | 90 | 180 | 365 \n",
         "Country: The country name i.e France \n",
-
-        '1: Compare vaccination between 2 countries: !Compare Country1 Country2 Metrics Days',
-        '2: Get countries with highest number of vaccinated people: !Top Records Metrics Days',
-        '3: Get countries with lowest number of vaccinated people: !Bottom Records Metrics Days',
-        '4: '
+        
+        '1: Vaccination rate in a specific country: !See Country Metrics Days',
+        '2: Compare vaccination between 2 countries: !Compare Country1 Country2 Metrics Days',
+        '3: Get countries with highest number of vaccinated people: !Top Records Metrics Days',
+        '4: Get countries with lowest number of vaccinated people: !Bottom Records Metrics Days',
+        '5: Total Vaccinations Given in the World within given days: !World Metrics',
+        '6: Total Vaccinations Given in the World within given days: !World_daily '
     ]
 
     response = "\n".join(help_messages)
     await ctx.send(response)
+
+
+
+@bot.command(name='See', help='Vaccination rate in a specific country: Type !help_me')
+async def vaccination_rate(ctx, country1, metrics, days: int):
+    '''
+     Vaccination rate in a specific country
+    '''
+    
+    country_1 = country1.strip().title()
+
+    print(country_1, metrics, days)
+
+    if country_1 not in data_processing.country_list:
+        response = "Country not found. Please check your entry again."
+        await ctx.send(response)
+        return
+
+    if metrics not in ["total_vaccinations", "total_vaccinations_per_hundred"]:
+        response = "Check the input again. Metrics need to be either total_vaccinations or total_vaccinations_per_hundred"
+        await ctx.send(response)
+        return
+
+    img_path = data_processing.country_vaccination_rate(country_1, days, metrics, bot.user.name)
+    response = "Below is a Line Plot showing the {} in {} within the last {} days." .format(metrics, country_1, days)
+
+    await ctx.send(response)
+    await ctx.send(file=discord.File(img_path))
+    functions.delete_file(img_path)
+
+
+
 
 @bot.command(name='Compare', help='Compare vaccination between 2 countries: Type !help_me')
 async def compare(ctx, country1, country2, metrics, days: int):
@@ -84,7 +118,7 @@ async def compare(ctx, country1, country2, metrics, days: int):
         return
 
     img_path = data_processing.compare_vaccinations_between_countries(country_1, country_2, days, metrics, bot.user.name)
-    response = "Below is a Line Plot compaing the progress of {} between {} and {} with the last {} days." .format(metrics, country_1, country_2, days)
+    response = "Below is a Line Plot compaing the progress of {} between {} and {} within the last {} days." .format(metrics, country_1, country_2, days)
 
     await ctx.send(response)
     await ctx.send(file=discord.File(img_path))
@@ -142,6 +176,42 @@ async def bottom(ctx, records: int, metrics, days: int):
 
 #     response = "Sorry, I don't understand your message. Type !help for more information. "
 #     await message.channel.send(response)
+
+@bot.command(name='World', help='Total Vaccinations Given in the World: Type !help_me')
+async def world(ctx, metrics):
+    '''
+     Total Vaccinations Given in the World
+    '''
+    
+
+    print( metrics)
+
+    if metrics not in ["total_vaccinations"]:
+        response = "Check the input again. Metrics need to be either total_vaccinations or total_vaccinations_per_hundred"
+        await ctx.send(response)
+        return
+
+    img_path = data_processing.total_vaccinations_given_in_world( metrics, bot.user.name)
+    response = "Below is a world map showing the {}." .format(metrics)
+
+    await ctx.send(response)
+    await ctx.send(file=discord.File(img_path))
+    functions.delete_file(img_path)
+
+
+@bot.command(name='World_daily', help=' Daily vaccinations across the world: Type !help_me')
+async def worldperc(ctx):
+    '''
+    Daily vaccinations
+    '''
+    
+
+    img_path = data_processing.daily_vaccinated(bot.user.name)
+    response = "Below is a world map showing the daily vaccinations."
+
+    await ctx.send(response)
+    await ctx.send(file=discord.File(img_path))
+    functions.delete_file(img_path)
 
 
 bot.run(TOKEN)
