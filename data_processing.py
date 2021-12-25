@@ -3,9 +3,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 
-from IPython.display import Image
-import matplotlib.pyplot as plt
-from PIL import Image
+
 import PIL
 import datetime
 

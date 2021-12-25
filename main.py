@@ -52,6 +52,7 @@ async def help_me(ctx):
         "Metrics: total_vaccinations | total_vaccinations_per_hundred \n",
         "Days: 30 | 90 | 180 | 365 \n",
         "Country: The country name i.e France \n",
+        "Records: Number of records to return",
 
         '1: Compare vaccination between 2 countries: !Compare Country1 Country2 Metrics Days',
         '2: Get countries with highest number of vaccinated people: !Top Records Metrics Days',
@@ -91,7 +92,7 @@ async def compare(ctx, country1, country2, metrics, days: int):
     functions.delete_file(img_path)
 
 
-@bot.command(name='Top', help='Get countries with highest number of vaccinated people: Type !help_me')
+@bot.command(name='Top', help='Get countries with the highest number of vaccinated people: Type !help_me')
 async def top(ctx, records: int, metrics, days: int):
     '''
      Get countries with highest number of vaccinated people
@@ -110,7 +111,7 @@ async def top(ctx, records: int, metrics, days: int):
     await ctx.send(file=discord.File(img_path))
     functions.delete_file(img_path)
 
-@bot.command(name='Bottom', help='Get countries with lowest number of vaccinated people: Type !help_me')
+@bot.command(name='Bottom', help='Get countries with the lowest number of vaccinated people: Type !help_me')
 async def bottom(ctx, records: int, metrics, days: int):
     '''
      Get countries with lowest number of vaccinated people
@@ -121,13 +122,19 @@ async def bottom(ctx, records: int, metrics, days: int):
         await ctx.send(response)
         return
     
-    img_path = data_processing.get_top_bottom_vaccinated_countries("Top", records, days, metrics, bot.user.name)
+    img_path = data_processing.get_top_bottom_vaccinated_countries("Bottom", records, days, metrics, bot.user.name)
     
     response = "Below is a Bar Chart showing the {} {} vaccinated countries within the last {} days." .format("Bottom", records, days)
 
     await ctx.send(response)
     await ctx.send(file=discord.File(img_path))
     functions.delete_file(img_path)
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.errors.CheckFailure):
+        await ctx.send('You do not have the correct role for this command.')
+
 
 # @bot.event
 # async def on_message(message):
@@ -137,12 +144,18 @@ async def bottom(ctx, records: int, metrics, days: int):
 #         return
 
 #     functions.log_message(message.content, bot.user.name)
-
 #     print(message.content + " from " + bot.user.name)
 
-#     response = "Sorry, I don't understand your message. Type !help for more information. "
+#     if message.content in ["Hi", "Hello"]:
+#         response = "Hello, welcome! How can I help you. Type !help"
+        
+#     # elif "help" in message.content.lower:
+#     #     response = "Type !help or !help_me"
+        
+#     else:
+#         response = "Sorry, I don't understand your message. Type !help for more information. "
+    
 #     await message.channel.send(response)
-
 
 bot.run(TOKEN)
 
