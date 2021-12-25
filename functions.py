@@ -3,6 +3,7 @@ import datetime
 
 import os
 import requests
+import pandas as pd
 
 ## Check for images directory and create it if it does not exist
 if not os.path.exists("images"):
@@ -79,7 +80,7 @@ def generate_vizualization_img(fig, the_user = 'temp_user'):
     '''
 
     img_path = "images/temp_{}.jpeg".format(the_user)
-    fig.write_image(img_path, width=1980, height=1080)
+    fig.write_image(img_path)#, width=4000, height=4000)
 
     print("Returning img_path after generating")
     return img_path
