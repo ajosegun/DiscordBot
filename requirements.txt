@@ -1,2 +1,5 @@
+discord
 numpy
 pandas
+plotly 
+PIL

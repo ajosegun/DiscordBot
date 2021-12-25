@@ -3,17 +3,12 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 import PIL
-#import datetime
 
 import os
 import requests
 import functions
-#from datetime import datetime, timedelta
 import plotly.offline as py
-#from datetime import datetime
-#datetime.timedelta()
 import datetime
-#datetime.datetime.timedelta()
 from datetime import timedelta
 
 

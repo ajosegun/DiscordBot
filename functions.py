@@ -1,6 +1,5 @@
 import config
 import datetime
-
 import os
 import requests
 import pandas as pd
