@@ -180,7 +180,7 @@ def total_vaccinations_given_in_world(the_user=''):
     fig = go.Figure(data=go.Choropleth(
                                     locations = country_df['iso_code'],
                                     z = country_df['total_vaccinations'].astype(float),
-                                    colorscale = "Reds",
+                                    colorscale = "Blues",
                                     colorbar_title = "Total Vaccinations Given"
                                         ))
 
@@ -188,7 +188,7 @@ def total_vaccinations_given_in_world(the_user=''):
         geo=dict(
             showframe=False,
             showcoastlines=False,
-            projection_type='equirectangular'
+            projection_type='natural earth'
         ),
         title={'text': f"Total Vaccinations Given in the World.", 'x': 0.5,
                             'xanchor': 'center', 'font': {'size': 16}}
@@ -212,7 +212,7 @@ def daily_vaccinated(the_user=''):
         fig = go.Figure(data=go.Choropleth(
                         locations=country_df['iso_code'],
                         z = country_df['daily_vaccinations_per_million'].astype(float),
-                        colorscale = "Reds",
+                        colorscale = "Blues",
                         colorbar_title = "Per Million",
                         text='Total Daily Vaccinations: ' + country_df['daily_vaccinations'].astype(float).apply('{:,}'.format) 
                     ))
@@ -221,7 +221,7 @@ def daily_vaccinated(the_user=''):
             geo=dict(
                 showframe=False,
                 showcoastlines=False,
-                projection_type='equirectangular'
+                projection_type='natural earth'
             ),
             title={'text': f"Daily Vaccinations Per Million in the World ", 'x': 0.5,
                                 'xanchor': 'center', 'font': {'size': 16}}
