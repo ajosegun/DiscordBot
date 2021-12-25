@@ -2,8 +2,6 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
-
-
 import PIL
 #import datetime
 
@@ -29,8 +27,6 @@ def get_vaccinations_dataset():
     '''
     Gets vaccinations dataset from the url or get it from the local dataset
     '''
-    
-    return pd.read_csv("dataset/vaccinations.csv")
 
     covid_vaccinations_url = "https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/vaccinations.csv"
 
@@ -68,38 +64,29 @@ country_vaccinations_df['country'] = country_vaccinations_df['location']
 country_list = country_vaccinations_df['country'].unique()
 today_date = datetime.datetime.now()
 
-# now = datetime.now() - timedelta(hours=19)
-# today = now.strftime("%Y-%m-%d")
-# print(f"Today's date is {today}.")
-
 def get_dataset_by_history(history_days = 90):
     '''
         Returns the country_vaccinations_df dataset filtered by length of days required
 
     '''
-    
-    # start_date = today_date.strftime("%Y-%m-%d")
 
     start_date = (today_date - datetime.timedelta(history_days)).strftime("%Y-%m-%d")
-    date_view = history_days
 
-    
     return country_vaccinations_df[country_vaccinations_df["date"] > start_date]
 
 def country_vaccination_rate(country_1, days, metrics = 'total_vaccinations', the_user=''):
     '''
-        Compares vaccinations history between 2 countries as defined by the metrics.
+        Gets the vaccination rate of a country as defined by the metrics.
         Default metrics is 'total_vaccinations'
         the_user is the Discord user
         returns the image path for the visualization
     '''
 
     if country_1 not in country_list :
+        ## Throw an exception
         pass
 
     country_df = get_dataset_by_history(days)
-    
-   # condition = (country_df['country'] == country_1)
     country_df = country_df[country_df['country'] == country_1]
     
     fig = go.Figure()
@@ -124,6 +111,7 @@ def compare_vaccinations_between_countries(country_1, country_2, days, metrics =
     '''
 
     if country_1 not in country_list or country_2 not in country_list:
+        ## Throw an exception
         pass
 
     country_df = get_dataset_by_history(days)
@@ -163,7 +151,6 @@ def get_top_bottom_vaccinated_countries(top_bottom, number_of_records, days, met
     if top_bottom.lower() == "bottom": ## True to get bottom countries
         ascending_value = True    
 
-
     vaccinated_by_country = country_vaccinations_df.groupby('country').max().sort_values(metrics, ascending=ascending_value).head(int(number_of_records))
     vaccinated_by_country = vaccinated_by_country[vaccinated_by_country["iso_code"].str.contains('OWID') == False]
 
@@ -179,19 +166,23 @@ def get_top_bottom_vaccinated_countries(top_bottom, number_of_records, days, met
     print("Sent fig to image generator")
     return functions.generate_vizualization_img(fig, the_user)
 
-def total_vaccinations_given_in_world( metrics = 'total_vaccinations', the_user=''):
+def total_vaccinations_given_in_world(the_user=''):
     '''
         Visualization of raw numbers for vaccinations given in the world.
         the_user is the Discord user
         returns the image path for the visualization
     '''
     country_df = get_dataset_by_history()
+
+    ## Filter by country only
+    country_df = country_df[country_df["iso_code"].str.contains('OWID') == False]
+
     fig = go.Figure(data=go.Choropleth(
-    locations=country_df['iso_code'],
-    z=country_df['total_vaccinations'].astype(float),
-    colorscale="Reds",
-    colorbar_title="Total Vaccinations Given"
-        ))
+                                    locations = country_df['iso_code'],
+                                    z = country_df['total_vaccinations'].astype(float),
+                                    colorscale = "Reds",
+                                    colorbar_title = "Total Vaccinations Given"
+                                        ))
 
     fig.update_layout(
         geo=dict(
@@ -208,20 +199,23 @@ def total_vaccinations_given_in_world( metrics = 'total_vaccinations', the_user=
     return functions.generate_vizualization_img(fig, the_user)
     
     
-def daily_vaccinated( the_user=''):
+def daily_vaccinated(the_user=''):
         '''
-        Daily vaccinations in different countrie.
+        Daily vaccinations in different countries.
         the_user is the Discord user
         returns the image path for the visualization
         '''
         country_df = get_dataset_by_history()
+        ## Filter by country only
+        country_df = country_df[country_df["iso_code"].str.contains('OWID') == False]
+
         fig = go.Figure(data=go.Choropleth(
-            locations=country_df['iso_code'],
-            z=country_df['daily_vaccinations_per_million'].astype(float),
-            colorscale="Reds",
-            colorbar_title="Per Million",
-            text='Total Daily Vaccinations: ' + country_df['daily_vaccinations'].astype(float).apply('{:,}'.format) 
-        ))
+                        locations=country_df['iso_code'],
+                        z = country_df['daily_vaccinations_per_million'].astype(float),
+                        colorscale = "Reds",
+                        colorbar_title = "Per Million",
+                        text='Total Daily Vaccinations: ' + country_df['daily_vaccinations'].astype(float).apply('{:,}'.format) 
+                    ))
 
         fig.update_layout(
             geo=dict(

@@ -14,7 +14,7 @@ client = discord.Client()
 help_command = commands.DefaultHelpCommand(
     no_category = 'Visualizations Commands'
 )
-bot = commands.Bot(command_prefix='!', help_command = help_command, description = 'Covid 19 Progress Visualization')
+bot = commands.Bot(command_prefix='!', help_command = help_command, description = 'Covid 19 Progress Visualization - Type !help')
 
 @bot.event
 async def on_ready():
@@ -31,16 +31,12 @@ async def on_ready():
     members = '\n - '.join([member.name for member in guild.members])
     print(f'Guild Members:\n - {members}')
 
-    # await bot.get_channel(guild.id).send("bot is online")
-
-
 @bot.event
 async def on_member_join(member):
     await member.create_dm()
     await member.dm_channel.send(
         f'Hi {member.name}, welcome to my Aivancity Gamers server! Type Help to get started.'
     )
-
 
 @bot.command(name='help_me', help='Provides information about the usage of this bot')
 async def help_me(ctx):
@@ -52,14 +48,7 @@ async def help_me(ctx):
         "Metrics: total_vaccinations | total_vaccinations_per_hundred \n",
         "Days: 30 | 90 | 180 | 365 \n",
         "Country: The country name i.e France \n",
-<<<<<<< HEAD
         "Records: Number of records to return",
-
-        '1: Compare vaccination between 2 countries: !Compare Country1 Country2 Metrics Days',
-        '2: Get countries with highest number of vaccinated people: !Top Records Metrics Days',
-        '3: Get countries with lowest number of vaccinated people: !Bottom Records Metrics Days',
-        '4: '
-=======
         
         '1: Vaccination rate in a specific country: !See Country Metrics Days',
         '2: Compare vaccination between 2 countries: !Compare Country1 Country2 Metrics Days',
@@ -67,13 +56,10 @@ async def help_me(ctx):
         '4: Get countries with lowest number of vaccinated people: !Bottom Records Metrics Days',
         '5: Total Vaccinations Given in the World within given days: !World Metrics',
         '6: Total Vaccinations Given in the World within given days: !World_daily '
->>>>>>> a650a0e22e6ee04d85561f0fcfdbcf9d21923699
     ]
 
     response = "\n".join(help_messages)
     await ctx.send(response)
-
-
 
 @bot.command(name='See', help='Vaccination rate in a specific country: Type !help_me')
 async def vaccination_rate(ctx, country1, metrics, days: int):
@@ -101,9 +87,6 @@ async def vaccination_rate(ctx, country1, metrics, days: int):
     await ctx.send(response)
     await ctx.send(file=discord.File(img_path))
     functions.delete_file(img_path)
-
-
-
 
 @bot.command(name='Compare', help='Compare vaccination between 2 countries: Type !help_me')
 async def compare(ctx, country1, country2, metrics, days: int):
@@ -137,7 +120,7 @@ async def compare(ctx, country1, country2, metrics, days: int):
 @bot.command(name='Top', help='Get countries with the highest number of vaccinated people: Type !help_me')
 async def top(ctx, records: int, metrics, days: int):
     '''
-     Get countries with highest number of vaccinated people
+    Get countries with highest number of vaccinated people
     '''
     
     if metrics not in ["total_vaccinations", "total_vaccinations_per_hundred"]:
@@ -156,7 +139,7 @@ async def top(ctx, records: int, metrics, days: int):
 @bot.command(name='Bottom', help='Get countries with the lowest number of vaccinated people: Type !help_me')
 async def bottom(ctx, records: int, metrics, days: int):
     '''
-     Get countries with lowest number of vaccinated people
+    Get countries with lowest number of vaccinated people
     '''
     
     if metrics not in ["total_vaccinations", "total_vaccinations_per_hundred"]:
@@ -177,58 +160,24 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         await ctx.send('You do not have the correct role for this command.')
 
-
-# @bot.event
-# async def on_message(message):
-    
-#     ## Differientiate between messages from the bot and a user
-#     if message.author == bot.user:
-#         return
-
-#     functions.log_message(message.content, bot.user.name)
-#     print(message.content + " from " + bot.user.name)
-
-#     if message.content in ["Hi", "Hello"]:
-#         response = "Hello, welcome! How can I help you. Type !help"
-        
-#     # elif "help" in message.content.lower:
-#     #     response = "Type !help or !help_me"
-        
-#     else:
-#         response = "Sorry, I don't understand your message. Type !help for more information. "
-    
-#     await message.channel.send(response)
-
-<<<<<<< HEAD
-=======
 @bot.command(name='World', help='Total Vaccinations Given in the World: Type !help_me')
-async def world(ctx, metrics):
+async def world_total_vaccinations(ctx):
     '''
-     Total Vaccinations Given in the World
+     Returns a vizualization of the total world vaccination as a map
     '''
-    
 
-    print( metrics)
-
-    if metrics not in ["total_vaccinations"]:
-        response = "Check the input again. Metrics need to be either total_vaccinations or total_vaccinations_per_hundred"
-        await ctx.send(response)
-        return
-
-    img_path = data_processing.total_vaccinations_given_in_world( metrics, bot.user.name)
-    response = "Below is a world map showing the {}." .format(metrics)
+    img_path = data_processing.total_vaccinations_given_in_world(bot.user.name)
+    response = "Below is a world map showing the {}." .format("Total Vaccination")
 
     await ctx.send(response)
     await ctx.send(file=discord.File(img_path))
     functions.delete_file(img_path)
 
-
 @bot.command(name='World_daily', help=' Daily vaccinations across the world: Type !help_me')
-async def worldperc(ctx):
+async def world_daily_vaccinations(ctx):
     '''
-    Daily vaccinations
+    Returns a vizualization of the world daily vaccination as a map
     '''
-    
 
     img_path = data_processing.daily_vaccinated(bot.user.name)
     response = "Below is a world map showing the daily vaccinations."
@@ -237,7 +186,5 @@ async def worldperc(ctx):
     await ctx.send(file=discord.File(img_path))
     functions.delete_file(img_path)
 
-
->>>>>>> a650a0e22e6ee04d85561f0fcfdbcf9d21923699
 bot.run(TOKEN)
 

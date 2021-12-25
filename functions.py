@@ -52,11 +52,11 @@ def get_vaccinations_dataset():
     '''
     Gets vaccinations dataset from the url or get it from the local dataset
     '''
-    covid_vaccinations_ur = "https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/vaccinations.csv"
+    covid_vaccinations_url = "https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/vaccinations.csv"
 
     ## Get the dataset from the API
     try:
-        country_vaccinations_df = pd.read_csv(covid_vaccinations_ur)
+        country_vaccinations_df = pd.read_csv(covid_vaccinations_url)
         country_vaccinations_df.to_csv('dataset/vaccinations.csv')
 
     except Exception as e:
