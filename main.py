@@ -18,6 +18,9 @@ bot = commands.Bot(command_prefix='!', help_command = help_command, description 
 
 @bot.event
 async def on_ready():
+    '''
+    Bot start up activites
+    '''
     for guild in bot.guilds:
         if guild.name == GUILD:
             break
@@ -31,12 +34,16 @@ async def on_ready():
     members = '\n - '.join([member.name for member in guild.members])
     print(f'Guild Members:\n - {members}')
 
+    channel = bot.get_channel(config.channel_ID)
+    await channel.send(f'{bot.user} is online:\nType !help or !help_me to get information on how to use me')
+
 @bot.event
 async def on_member_join(member):
     await member.create_dm()
     await member.dm_channel.send(
         f'Hi {member.name}, welcome to my Aivancity Gamers server! Type Help to get started.'
     )
+
 
 @bot.command(name='help_me', help='Provides information about the usage of this bot')
 async def help_me(ctx):
@@ -155,11 +162,6 @@ async def bottom(ctx, records: int, metrics, days: int):
     await ctx.send(file=discord.File(img_path))
     functions.delete_file(img_path)
 
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.errors.CheckFailure):
-        await ctx.send('You do not have the correct role for this command.')
-
 @bot.command(name='World', help='Total Vaccinations Given in the World: Type !help_me')
 async def world_total_vaccinations(ctx):
     '''
@@ -185,6 +187,36 @@ async def world_daily_vaccinations(ctx):
     await ctx.send(response)
     await ctx.send(file=discord.File(img_path))
     functions.delete_file(img_path)
+
+@bot.event
+async def on_command_error(ctx: commands.Context, error: commands.CommandError):
+    '''
+    A global error handler
+    '''
+    error_message = ""
+
+    if isinstance(error, commands.errors.TooManyArguments):
+        error_message = 'You have entered too many inputs. Type !help_me for more information'
+        
+    elif isinstance(error, commands.errors.MissingRequiredArgument):
+        error_message = 'Kindly enter all the required parameters. Type !help_me for more information'
+
+    elif isinstance(error, commands.errors.CommandInvokeError):
+        error_message = 'One of the parameters might be wrongly spelt. Type !help_me for more information'
+    
+    elif isinstance(error, commands.errors.ConversionError):
+        error_message = 'Check one of the integer parameter you entered. Type !help_me to understand the commands to use'
+        
+    elif isinstance(error, commands.errors.UserInputError):
+        error_message = 'Something about your input was wrong, please check your input and try again!'
+
+    elif isinstance(error, commands.errors.CommandNotFound):
+        error_message = "Sorry I don't understand your command. Type !help_me to understand the commands to use"
+    
+    else:
+        error_message = 'Something went wrong! Type !help_me for more information or contact the administrator'
+
+    await ctx.send(error_message + " \n" + str(error))
 
 bot.run(TOKEN)
 
